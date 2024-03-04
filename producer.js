@@ -21,6 +21,7 @@ async function run() {
     console.log("Connected!");
     //A-M 0 , N-Z 1
     let msg = 0;
+    let messageValue = `${msg} + Hello`
     let result;
     setInterval(async () => {
       result = await producer.send({
@@ -31,10 +32,10 @@ async function run() {
           },
         ],
       });
+      console.log(`Send Successfully! ${JSON.stringify(result)}`);
       msg++;
     }, 10000);
 
-    console.log(`Send Successfully! ${JSON.stringify(result)}`);
     // await producer.disconnect();
   } catch (ex) {
     console.error(`Something bad happened ${ex}`);
