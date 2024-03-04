@@ -12,11 +12,11 @@ dotenv.config();
 async function run() {
   try {
     const kafka = new Kafka({
-      clientId: "myapp",
+      clientId: `Client-${Date.now()}`,
       brokers: ["my-cluster-kafka-bootstrap.kafka:9092"],
     });
 
-    const consumer = kafka.consumer({ groupId: "test" });
+    const consumer = kafka.consumer({ groupId: "input-test-group1" });
     console.log("Connecting.....");
     await consumer.connect();
     console.log("Connected!");
