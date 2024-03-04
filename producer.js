@@ -1,41 +1,47 @@
 //const Kafka = require("kafkajs").Kafka
-const {Kafka} = require("kafkajs")
-const msg = process.argv[2];
-run();
-async function run(){
-    try
-    {
-         const kafka = new Kafka({
-              "clientId": "myapp",
-              "brokers" :["localhost:9092"]
-         })
+const { Kafka } = require("kafkajs");
 
-        const producer = kafka.producer();
-        console.log("Connecting.....")
-        await producer.connect()
-        console.log("Connected!")
-        //A-M 0 , N-Z 1 
-        const partition = msg[0] < "N" ? 0 : 1;
-        const result =  await producer.send({
-            "topic": "Users",
-            "messages": [
-                {
-                    "value": msg,
-                    "partition": partition
-                }
-            ]
-        })
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const app = express();
 
-        console.log(`Send Successfully! ${JSON.stringify(result)}`)
-        await producer.disconnect();
-    }
-    catch(ex)
-    {
-        console.error(`Something bad happened ${ex}`)
-    }
-    finally{
-        process.exit(0);
-    }
+const dotenv = require("dotenv");
+dotenv.config();
 
+async function run() {
+  try {
+    const kafka = new Kafka({
+      clientId: "myapp",
+      brokers: ["my-cluster-kafka-bootstrap.kafka:9092"],
+    });
+    const producer = kafka.producer();
+    console.log("Connecting.....");
+    await producer.connect();
+    console.log("Connected!");
+    //A-M 0 , N-Z 1
+    let msg = 0;
+    let result;
+    setInterval(async () => {
+      result = await producer.send({
+        topic: "Users",
+        messages: [
+          {
+            value: msg,
+          },
+        ],
+      });
+      msg++;
+    }, 10000);
 
+    console.log(`Send Successfully! ${JSON.stringify(result)}`);
+    // await producer.disconnect();
+  } catch (ex) {
+    console.error(`Something bad happened ${ex}`);
+  }
 }
+run();
+
+app.listen(process.env.SERVER_PORT, () => {
+  console.log("Listening at http://localhost:" + process.env.SERVER_PORT);
+});
