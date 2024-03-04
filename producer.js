@@ -28,7 +28,7 @@ async function run() {
         topic: "Users",
         messages: [
           {
-            value: msg,
+            value: messageValue,
           },
         ],
       });
