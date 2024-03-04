@@ -22,14 +22,14 @@ async function run() {
     console.log("Connected!");
 
     await consumer.subscribe({
-      topic: "Users",
+      topic: "input",
       fromBeginning: true,
     });
 
     await consumer.run({
       eachMessage: async (result) => {
         console.log(
-          `RVD Msg ${result.message.value} on partition ${result.partition}`
+          `Message -  ${result.message.value}`
         );
       },
     });
