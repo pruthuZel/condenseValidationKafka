@@ -2,7 +2,7 @@
 const {Kafka} = require("kafkajs")
 
 run();
-async function run(){
+async function run(){vczxcvxzcv
     try
     {
          const kafka = new Kafka({
@@ -12,6 +12,7 @@ async function run(){
 
         const admin = kafka.admin();
         console.log("Connecting.....")
+        console.log("Validation")
         await admin.connect()
         console.log("Connected!")
         //A-M, N-Z
