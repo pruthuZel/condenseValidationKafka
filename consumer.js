@@ -28,14 +28,24 @@ async function run() {
       topic: "kinesis-input-topic",
       fromBeginning: true,
     });
-    let msg;
+    let msg = 0;
     await consumer.run({
       eachMessage: async (result) => {
         console.log(`Message -  ${result.message.value}`);
         let parserData = result.message.value;
         parserData = `[{key:${msg},value:${result.message.value}}]`;
-        console.log("parserData....",parserData)
+        console.log("parserData....", parserData);
         msg++;
+
+        let result = await producer.send({
+          topic: "kinesis-output-topic",
+          messages: [
+            {
+              value: parserData,
+            },
+          ],
+        });
+        console.log(`Send Successfully! ${JSON.stringify(result)}`);
       },
     });
   } catch (ex) {
