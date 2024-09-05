@@ -16,7 +16,7 @@ async function run() {
       brokers: ["my-cluster-kafka-bootstrap.kafka:9092"],
     });
 
-    const consumer = kafka.consumer({ groupId: "input-test-group-9" });
+    const consumer = kafka.consumer({ groupId: "new-input-group" });
     const producer = kafka.producer();
 
     console.log("Connecting.....");
