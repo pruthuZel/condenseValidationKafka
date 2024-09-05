@@ -1,13 +1,12 @@
 //const Kafka = require("kafkajs").Kafka
 const {Kafka} = require("kafkajs")
 
-run();
-async function run(){vczxcvxzcv
+async function run(){
     try
     {
          const kafka = new Kafka({
               "clientId": "myapp",
-              "brokers" :["localhost:9092"]
+              "brokers" :["my-cluster-kafka-bootstrap.kafka:9092"]
          })
 
         const admin = kafka.admin();
@@ -18,8 +17,7 @@ async function run(){vczxcvxzcv
         //A-M, N-Z
         await admin.createTopics({
             "topics": [{
-                "topic" : "Users",
-                "numPartitions": 2
+                "topic" : "kinesis-input-topic"
             }]
         })
         console.log("Created Successfully!")
@@ -32,6 +30,5 @@ async function run(){vczxcvxzcv
     finally{
         process.exit(0);
     }
-
-
 }
+run();
