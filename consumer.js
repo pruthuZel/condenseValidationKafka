@@ -25,7 +25,7 @@ async function run() {
     console.log("Connected!");
 
     await consumer.subscribe({
-      topic: "kinesis-input-topic",
+      topic: "In",
       fromBeginning: true,
     });
     let msg;
@@ -47,5 +47,5 @@ async function run() {
 run();
 
 app.listen(process.env.SERVER_PORT, () => {
-  console.log("Listening at http://localhost:" + process.env.SERVER_PORT);
+  console.log("Listening at http://localhost:8080");
 });
