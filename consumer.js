@@ -37,7 +37,7 @@ async function run() {
         console.log("parserData....", parserData);
         msg++;
 
-        let result = await producer.send({
+        let resultNew = await producer.send({
           topic: "kinesis-output-topic",
           messages: [
             {
@@ -45,7 +45,7 @@ async function run() {
             },
           ],
         });
-        console.log(`Send Successfully! ${JSON.stringify(result)}`);
+        console.log(`Send Successfully! ${JSON.stringify(resultNew)}`);
       },
     });
   } catch (ex) {
