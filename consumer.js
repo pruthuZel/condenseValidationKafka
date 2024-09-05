@@ -25,7 +25,7 @@ async function run() {
     console.log("Connected!");
 
     await consumer.subscribe({
-      topic: "In",
+      topic: "kinesis-input-topic",
       fromBeginning: true,
     });
     let msg;
