@@ -1,61 +1,91 @@
-//const Kafka = require("kafkajs").Kafka
-const { Kafka } = require("kafkajs");
-
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const app = express();
-
-const dotenv = require("dotenv");
+import pkg from "kafkajs";
+const { Kafka } = pkg;
+import dotenv from "dotenv";
+import axios from "axios";
 dotenv.config();
-
-async function run() {
-  try {
-    const kafka = new Kafka({
-      clientId: `Client-${Date.now()}`,
-      brokers: ["my-cluster-kafka-bootstrap.kafka:9092"],
-    });
-
-    const consumer = kafka.consumer({ groupId: "new-input-group" });
-    const producer = kafka.producer();
-
-    console.log("Connecting.....");
-    await consumer.connect();
-    await producer.connect();
-    console.log("Connected!");
-
-    await consumer.subscribe({
-      topic: "kinesis-input-topic",
-      fromBeginning: true,
-    });
-    let msg = 0;
-    await consumer.run({
-      eachMessage: async (result) => {
-        console.log(`Message -  ${result.message.value}`);
-        let parserData = result.message.value;
-        parserData = `[{key:${msg},value:${result.message.value}}]`;
-        console.log("parserData....", parserData);
-        msg++;
-
-        let resultNew = await producer.send({
-          topic: "kinesis-output-topic",
-          messages: [
-            {
-              value: parserData,
-            },
-          ],
-        });
-        console.log(`Send Successfully! ${JSON.stringify(resultNew)}`);
-      },
-    });
-  } catch (ex) {
-    console.error(`Something bad happened ${ex}`);
-  } finally {
-  }
-}
-
-run();
-
-app.listen(process.env.SERVER_PORT, () => {
-  console.log("Listening at http://localhost:8080");
+ 
+// Create the client with the broker list, minimum 1 broker(bootstrap) is needed
+// The client will auto-fetch the metadata of others
+const kafka = new Kafka({
+  clientId: "push-data-service-" + Date.now(), // Append Current Epoch milliseconds for Random Id
+  brokers: [
+    process.env.KAFKA_BOOTSTRAP_SERVER_URL ||
+      "my-cluster-kafka-bootstrap.kafka:9092",
+  ],
+});
+ 
+// Consumer
+const consumerData = kafka.consumer({
+  groupId: "push-data-service-group",
+});
+ 
+// Producer
+const producer = kafka.producer();
+ 
+const run = async () => {
+  await consumerData.connect();
+  await producer.connect();
+  console.info("Connected to Kafka Broker.");
+  await consumerData.subscribe({
+    topic: process.env.SUBSCRIBE_TOPIC,
+    fromBeginning: false,
+  });
+ 
+  consumerData.run({
+    eachMessage: async ({ topic, partition, message }) => {
+      try {
+        let payLoadParsed = JSON.parse(message.value.toString());
+        if (payLoadParsed) {
+          let payloadArr = [];
+          let obj = {
+            key: "TelematicsEvent",
+            value: JSON.stringify(payLoadParsed),
+          };
+ 
+          payloadArr.push(obj);
+ 
+          await producer.send({
+            topic: process.env.PUBLISH_TRACK_TOPIC,
+            messages: [
+              {
+                key: payLoadParsed.imeiNo,
+                value: JSON.stringify(payloadArr),
+              },
+            ],
+          });
+  
+        }
+      } catch (error) {
+        console.log("Eror: ",error);
+      }
+    },
+  });
+};
+ 
+run().catch("run error: ", console.error);
+ 
+consumerData.on("consumer.crash", function () {
+  console.log("Crash detected");
+  process.exit(0);
+});
+ 
+consumerData.on("consumer.disconnect", function () {
+  console.log("Disconnect detected");
+  process.exit(0);
+});
+ 
+consumerData.on("consumer.stop", function () {
+  console.log("Stop detected");
+  process.exit(0);
+});
+ 
+const errorTypes = ["unhandledRejection"];
+ 
+errorTypes.map((type) => {
+  process.on(type, async (e) => {
+    console.log(`process.on ${type}`);
+    console.error(e);
+    // await consumer.disconnect()
+    process.exit(0);
+  });
 });
