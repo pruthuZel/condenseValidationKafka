@@ -16,7 +16,7 @@ const kafka = new Kafka({
  
 // Consumer
 const consumerData = kafka.consumer({
-  groupId: "push-data-service-group",
+  groupId: "push-data-service-group-1",
 });
  
 // Producer
@@ -43,8 +43,9 @@ const run = async () => {
           };
  
           payloadArr.push(obj);
+          console.log("payloadArr...",payloadArr)
  
-          await producer.send({
+          let ans = await producer.send({
             topic: process.env.PUBLISH_TRACK_TOPIC,
             messages: [
               {
@@ -53,6 +54,8 @@ const run = async () => {
               },
             ],
           });
+
+          console.log("Result---",ans)
   
         }
       } catch (error) {
