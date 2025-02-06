@@ -12,6 +12,12 @@ const kafka = new Kafka({
     process.env.KAFKA_BOOTSTRAP_SERVER_URL ||
       "my-cluster-kafka-bootstrap.kafka:9092",
   ],
+  sasl: {
+    mechanism: 'PLAIN',
+    username: 'my-connect-user',
+    password: '3uuqhR2WHaxzC',
+  },
+  ssl: true, // optional
 });
  
 // Consumer

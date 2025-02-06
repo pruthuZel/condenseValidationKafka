@@ -6,7 +6,12 @@ async function run(){
     {
          const kafka = new Kafka({
               "clientId": "myapp",
-              "brokers" :["my-cluster-kafka-bootstrap.kafka:9092"]
+              "brokers" :["my-cluster-kafka-bootstrap.kafka:9092"],
+              sasl: {
+                mechanism: 'PLAIN',
+                username: 'my-connect-user',
+                password: '3uuqhR2WHaxzC',
+              },
          })
 
         const admin = kafka.admin();
