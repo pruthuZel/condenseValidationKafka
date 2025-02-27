@@ -14,15 +14,15 @@ const kafka = new Kafka({
   ],
   sasl: {
     mechanism: 'PLAIN',
-    username: 'my-connect-user',
-    password: '3uuqhR2WHaxzC',
+    username: process.env.KAFKA_USERNAME||'my-connect-user',
+    password: process.env.KAFKA_PASSWORD||'eWKhGtJJ16Fo9svPInU8Osw99zEZ44wt',
   },
   ssl: true, // optional
 });
  
 // Consumer
 const consumerData = kafka.consumer({
-  groupId: "push-data-service-group-1",
+  groupId: "valdidation-split-group-1",
 });
  
 // Producer
