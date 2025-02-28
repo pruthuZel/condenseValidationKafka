@@ -10,14 +10,14 @@ const kafka = new Kafka({
   clientId: "push-data-service-" + Date.now(), // Append Current Epoch milliseconds for Random Id
   brokers: [
     process.env.KAFKA_BOOTSTRAP_SERVER_URL ||
-      "my-cluster-kafka-bootstrap.kafka:9092",
+      "my-cluster-kafka-bootstrap.kafka:9095",
   ],
-  sasl: {
-    mechanism: 'PLAIN',
-    username: process.env.KAFKA_USERNAME||'my-connect-user',
-    password: process.env.KAFKA_PASSWORD||'eWKhGtJJ16Fo9svPInU8Osw99zEZ44wt',
-  },
-  ssl: true, // optional
+  // sasl: {
+  //   mechanism: 'PLAIN',
+  //   username: process.env.KAFKA_USERNAME||'my-connect-user',
+  //   password: process.env.KAFKA_PASSWORD||'eWKhGtJJ16Fo9svPInU8Osw99zEZ44wt',
+  // },
+  // ssl: true, // optional
 });
  
 // Consumer
