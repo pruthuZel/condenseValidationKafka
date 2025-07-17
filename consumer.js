@@ -3,7 +3,6 @@ const { Kafka } = pkg;
 import dotenv from "dotenv";
 import axios from "axios";
 dotenv.config();
- nfdkasnfkjsadnfjksdnfkjsdnfjkasdf
 // Create the client with the broker list, minimum 1 broker(bootstrap) is needed
 // The client will auto-fetch the metadata of others
 const kafka = new Kafka({
