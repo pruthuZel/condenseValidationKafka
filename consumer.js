@@ -27,7 +27,7 @@ const consumerData = kafka.consumer({
  
 // Producer
 const producer = kafka.producer();
- 
+ sadfsadfa
 const run = async () => {
   await consumerData.connect();
   await producer.connect();
