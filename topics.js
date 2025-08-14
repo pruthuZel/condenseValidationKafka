@@ -13,7 +13,6 @@ async function run(){
                 password: '3uuqhR2WHaxzC',
               },
          })
-dsafasdfasdf
         const admin = kafka.admin();
         console.log("Connecting.....")
         console.log("Validation")
